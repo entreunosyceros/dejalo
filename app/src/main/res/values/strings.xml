@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Déjalo!</string>
+    <string name="widget_label">Déjalo! — resumen</string>
+    <string name="widget_description">Dinero ahorrado, días limpios y acceso al modo emergencia.</string>
+    <string name="widget_savings_label">Déjalo! — ahorrado</string>
+    <string name="widget_savings_description">Muestra el dinero que has dejado de gastar en tabaco.</string>
+    <string name="emergency_shortcut">Modo emergencia</string>
+    <string name="channel_milestones">Hitos</string>
+    <string name="channel_reinforcement">Refuerzo</string>
+    <string name="channel_risk">Zonas de riesgo</string>
+</resources>

@@ -1,0 +1,80 @@
+# Built application files
+*.apk
+*.ap_
+*.aab
+*.dex
+
+# Generated / build output
+bin/
+gen/
+out/
+release/
+.gradle/
+build/
+**/build/
+
+# Local configuration (SDK path — machine-specific)
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+*.hprof
+*.log
+
+# Kotlin incremental / caches
+.kotlin/
+
+# NDK
+obj/
+
+# Signing — never commit keys or passwords
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+
+# Google / Firebase (if added later)
+google-services.json
+GoogleService-Info.plist
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.p12
+
+# OS junk
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# Editors
+*.swp
+*.swo
+*~
+.vscode/
+.fleet/
+*.bak
+
+# Tests / coverage / lint
+.navigation/
+jacoco.exec
+test-output/
+reports/
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# Misc
+*.class
+proguard/
+profile
