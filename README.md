@@ -5,7 +5,7 @@
 
 </p>
 
-App Android **offline-first** para acompañar la deshabituación tabáquica: métricas en tiempo real, soporte ante *cravings*, minijuegos de distracción, recuperación biológica, logros y registro de recaídas.
+Esta es una pequeña App Android **offline-first** para acompañar la deshabituación tabáquica: métricas en tiempo real, soporte ante *cravings*, minijuegos de distracción, recuperación biológica, logros y registro de recaídas.
 
 ---
 
