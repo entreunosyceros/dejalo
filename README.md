@@ -289,7 +289,10 @@ APK debug (tras compilar):
 
 ```bash
 ./gradlew :app:assembleDebug
-# → app/build/outputs/apk/debug/app-debug.apk
+# → app/build/outputs/apk/debug/Déjalo!-debug.apk
+
+./gradlew :app:assembleRelease
+# → app/build/outputs/apk/release/Déjalo!-release.apk
 ```
 
 Tests unitarios del motor de cálculo:

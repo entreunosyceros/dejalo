@@ -1,19 +1,19 @@
-# Built application files
+# Built application files / packages
 *.apk
 *.ap_
 *.aab
 *.dex
+*.apks
 
 # Generated / build output
 bin/
 gen/
 out/
-release/
 .gradle/
 build/
 **/build/
 
-# Local configuration (SDK path — machine-specific)
+# Local configuration (SDK path — machine-specific; never commit)
 local.properties
 
 # Android Studio / IntelliJ
@@ -31,23 +31,31 @@ captures/
 # NDK
 obj/
 
-# Signing — never commit keys or passwords
+# Signing — never commit keys, passwords or store files
 *.jks
 *.keystore
+*.key
+debug.keystore
 keystore.properties
 signing.properties
+**/keystore/
+**/keystores/
 
 # Google / Firebase (if added later)
 google-services.json
 GoogleService-Info.plist
 
-# Secrets / env
+# Secrets / env / credentials
 .env
 .env.*
 !.env.example
 secrets/
 *.pem
 *.p12
+*.pfx
+credentials.json
+service-account*.json
+**/secrets/
 
 # OS junk
 .DS_Store
@@ -63,6 +71,7 @@ Desktop.ini
 .vscode/
 .fleet/
 *.bak
+*.orig
 
 # Tests / coverage / lint
 .navigation/

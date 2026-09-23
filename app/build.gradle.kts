@@ -18,6 +18,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        // Firma release instalable (keystore de debug).
+        // Para Play Store: añade un signingConfig con tu keystore propio.
+        create("release") {
+            initWith(getByName("debug"))
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -25,6 +33,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -39,6 +48,14 @@ android {
 
     buildFeatures {
         compose = true
+    }
+}
+
+// Nombre del APK = nombre de la app (p. ej. Déjalo!-debug.apk).
+android.applicationVariants.configureEach {
+    outputs.configureEach {
+        val output = this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
+        output.outputFileName = "Déjalo!-${buildType.name}.apk"
     }
 }
 
