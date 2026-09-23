@@ -1,8 +1,9 @@
 # Déjalo!
+<p align="center">
+<img width="589" height="603" alt="dejalo_sinfondo" src="https://github.com/user-attachments/assets/9c3ff559-a5c0-4f8d-839f-ba735a356235" />
+</p>
 
 App Android **offline-first** para acompañar la deshabituación tabáquica: métricas en tiempo real, soporte ante *cravings*, minijuegos de distracción, recuperación biológica, logros y registro de recaídas.
-
-Repositorio: [github.com/entreunosyceros/dejalo](https://github.com/entreunosyceros/dejalo)
 
 ---
 
