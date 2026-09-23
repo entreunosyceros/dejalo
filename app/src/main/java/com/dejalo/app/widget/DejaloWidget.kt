@@ -36,12 +36,12 @@ private val Lime = ColorProvider(android.graphics.Color.parseColor("#7BC49A"))
 private val White = ColorProvider(android.graphics.Color.WHITE)
 private val Crisis = ColorProvider(android.graphics.Color.parseColor("#C45C26"))
 
-internal suspend fun loadWidgetStats(context: Context): LiveQuitStats? {
-    val app = context.applicationContext as DejaloApp
+internal suspend fun loadWidgetStats(context: Context): LiveQuitStats? = runCatching {
+    val app = context.applicationContext as? DejaloApp ?: return null
     val profile = app.repository.observeProfile().first() ?: return null
     val relapses = app.repository.observeRelapses().first()
     val now = System.currentTimeMillis()
-    return LiveQuitStats.from(
+    LiveQuitStats.from(
         quitAtMillis = profile.quitAtMillis,
         nowMillis = now,
         cigarettesPerDay = profile.cigarettesPerDay,
@@ -51,60 +51,85 @@ internal suspend fun loadWidgetStats(context: Context): LiveQuitStats? {
         relapseAtMillis = relapses.map { it.occurredAtMillis },
         savingsGoalEuros = profile.savingsGoalEuros
     )
-}
+}.getOrNull()
+
+private fun openAppIntent(context: Context): Intent =
+    Intent(context, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        action = Intent.ACTION_MAIN
+    }
+
+private fun openEmergencyIntent(context: Context): Intent =
+    Intent(context, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        action = "com.dejalo.app.OPEN_EMERGENCY"
+    }
 
 /** Widget resumen: ahorro destacado + días + acceso a emergencia. */
 class DejaloWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val stats = loadWidgetStats(context)
+        val openApp = openAppIntent(context)
+        val openEmergency = openEmergencyIntent(context)
         provideContent {
             GlanceTheme {
-                SummaryWidgetContent(context.packageName, stats)
+                SummaryWidgetContent(
+                    stats = stats,
+                    openApp = openApp,
+                    openEmergency = openEmergency
+                )
             }
         }
     }
 }
 
 @Composable
-private fun SummaryWidgetContent(packageName: String, stats: LiveQuitStats?) {
-    val openApp = Intent(Intent.ACTION_MAIN).setClassName(packageName, MainActivity::class.java.name)
-    val openEmergency = Intent(Intent.ACTION_VIEW)
-        .setClassName(packageName, MainActivity::class.java.name)
-        .setAction("com.dejalo.app.OPEN_EMERGENCY")
-
+private fun SummaryWidgetContent(
+    stats: LiveQuitStats?,
+    openApp: Intent,
+    openEmergency: Intent
+) {
+    // Un solo nivel de clickables (hermanos): Glance falla con clickables anidados.
     Column(
         modifier = GlanceModifier
             .fillMaxSize()
             .background(Navy)
-            .padding(16.dp)
-            .clickable(actionStartActivity(openApp)),
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "Déjalo!",
-            style = TextStyle(color = White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-        )
-        Spacer(GlanceModifier.height(6.dp))
-        if (stats == null) {
+        Column(
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .clickable(actionStartActivity(openApp))
+        ) {
             Text(
-                text = "Completa la configuración",
-                style = TextStyle(color = White, fontSize = 14.sp)
+                text = "Déjalo!",
+                style = TextStyle(color = White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
             )
-        } else {
-            Text(
-                text = "AHORRADO",
-                style = TextStyle(color = Lime, fontWeight = FontWeight.Medium, fontSize = 11.sp)
-            )
-            Text(
-                text = formatEuros(stats.moneySavedEuros),
-                style = TextStyle(color = White, fontWeight = FontWeight.Bold, fontSize = 26.sp)
-            )
-            Spacer(GlanceModifier.height(4.dp))
-            Text(
-                text = "Racha ${stats.streakDays} d · Acumulado ${stats.days} d",
-                style = TextStyle(color = Lime, fontSize = 13.sp)
-            )
+            Spacer(GlanceModifier.height(6.dp))
+            if (stats == null) {
+                Text(
+                    text = "Completa la configuración",
+                    style = TextStyle(color = White, fontSize = 14.sp)
+                )
+            } else {
+                Text(
+                    text = "AHORRADO",
+                    style = TextStyle(color = Lime, fontWeight = FontWeight.Medium, fontSize = 11.sp)
+                )
+                Text(
+                    text = formatEuros(stats.moneySavedEuros),
+                    style = TextStyle(color = White, fontWeight = FontWeight.Bold, fontSize = 26.sp)
+                )
+                Spacer(GlanceModifier.height(4.dp))
+                Text(
+                    text = "Racha ${stats.streakDays} d · Acumulado ${stats.days} d",
+                    style = TextStyle(color = Lime, fontSize = 13.sp)
+                )
+            }
+        }
+        if (stats != null) {
             Spacer(GlanceModifier.height(10.dp))
             Text(
                 text = "Modo emergencia",
@@ -128,18 +153,20 @@ class DejaloSavingsWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val stats = loadWidgetStats(context)
+        val openApp = openAppIntent(context)
         provideContent {
             GlanceTheme {
-                SavingsWidgetContent(context.packageName, stats)
+                SavingsWidgetContent(stats = stats, openApp = openApp)
             }
         }
     }
 }
 
 @Composable
-private fun SavingsWidgetContent(packageName: String, stats: LiveQuitStats?) {
-    val openApp = Intent(Intent.ACTION_MAIN).setClassName(packageName, MainActivity::class.java.name)
-
+private fun SavingsWidgetContent(
+    stats: LiveQuitStats?,
+    openApp: Intent
+) {
     Column(
         modifier = GlanceModifier
             .fillMaxSize()

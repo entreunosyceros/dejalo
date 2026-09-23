@@ -55,7 +55,7 @@ class EmergencyViewModel(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
-        EmergencyUiState(distractionCard = motivators.randomOrNull() ?: defaultPhrases.random())
+        EmergencyUiState(distractionCard = pickDistractionCard(motivators))
     )
     val state: StateFlow<EmergencyUiState> = _state.asStateFlow()
 
@@ -127,10 +127,9 @@ class EmergencyViewModel(
     }
 
     fun shuffleDistraction() {
-        val pool = (motivators + defaultPhrases).distinct()
         _state.update {
             it.copy(
-                distractionCard = pool.random(),
+                distractionCard = pickDistractionCard(motivators, avoid = it.distractionCard),
                 usedCard = true
             )
         }
@@ -247,7 +246,7 @@ class EmergencyViewModel(
         startedAt = 0L
         _state.update {
             EmergencyUiState(
-                distractionCard = motivators.randomOrNull() ?: defaultPhrases.random(),
+                distractionCard = pickDistractionCard(motivators),
                 intensityInitial = 7,
                 intensityFinal = 3
             )
@@ -256,13 +255,76 @@ class EmergencyViewModel(
 
     companion object {
         val triggers = listOf("Estrés", "Café", "Alcohol", "Entorno social", "Aburrimiento", "Otro")
+
+        /** Frases de refuerzo (nunca etiquetas cortas tipo «Salud»). */
         private val defaultPhrases = listOf(
             "Este impulso dura minutos. Tú puedes más.",
             "Respira. Ya has llegado hasta aquí.",
             "Un cigarrillo no borra el esfuerzo, pero sí frena tu racha.",
             "Bebe agua. Camina un poco. El pico pasa.",
-            "Juega un minuto. El ansia no puede gritar tanto si estás ocupado."
+            "Juega un minuto. El ansia no puede gritar tanto si estás ocupado.",
+            "No tienes que dejarlo para siempre ahora: solo no fumes estos cinco minutos.",
+            "Has superado picos peores. Este también bajará.",
+            "Sal al aire un momento. Cambia de sitio. Rompe el automatismo.",
+            "Cuenta hasta veinte despacio. Luego decide otra vez.",
+            "Tu cuerpo ya está recuperándose. No interrumpas el proceso ahora.",
+            "El ansia es una ola: sube, cresta y baja. Tú flotas.",
+            "Mira el reloj: dentro de un rato esto será solo un recuerdo.",
+            "Puedes aguantar. Ya lo estás haciendo.",
+            "Cada minuto sin fumar suma. Este también cuenta.",
+            "Si dudas, elige el no. El sí puede esperar."
         )
+
+        private val motivatorPhrases = mapOf(
+            "Salud" to listOf(
+                "Tu salud está mejorando cada día limpio. Protégela ahora.",
+                "Oxígeno, pulso, gusto: tu cuerpo nota cuando no fumas."
+            ),
+            "Ahorro" to listOf(
+                "Ese cigarrillo también es dinero que puedes guardar para tu meta.",
+                "Hoy el ahorro sigue creciendo. No lo frenes con un impulso."
+            ),
+            "Familia" to listOf(
+                "Piensa en quien te importa: merece tu versión sin humo.",
+                "Estás eligiendo estar más presente. Sigue así un poco más."
+            ),
+            "Ser un ejemplo" to listOf(
+                "Ser un ejemplo empieza en este minuto: no fumes ahora.",
+                "Alguien te mira. Muéstrale que el impulso se puede dejar pasar."
+            ),
+            "Ejemplo" to listOf(
+                "Ser un ejemplo empieza en este minuto: no fumes ahora."
+            ),
+            "Rendimiento" to listOf(
+                "Concentración y energía mejoran sin nicotina. Defiende ese avance.",
+                "Un cigarrillo no te da rendimiento: te lo cobra después."
+            ),
+            "Libertad" to listOf(
+                "Libertad es poder decir no cuando el ansia dice sí.",
+                "No dependes de este cigarrillo. Demuéstratelo ahora."
+            )
+        )
+
+        private fun phrasesForMotivators(motivators: List<String>): List<String> =
+            motivators.flatMap { key ->
+                motivatorPhrases[key]
+                    ?: listOfNotNull(
+                        key.takeIf { it.length > 12 }?.let { "Recuerda por qué lo dejas: $it" }
+                    )
+            }
+
+        fun pickDistractionCard(
+            motivators: List<String>,
+            avoid: String? = null
+        ): String {
+            val pool = (phrasesForMotivators(motivators) + defaultPhrases).distinct()
+            val candidates = if (avoid != null && pool.size > 1) {
+                pool.filter { it != avoid }
+            } else {
+                pool
+            }
+            return candidates.random()
+        }
 
         fun factory(repository: QuitRepository, motivators: List<String>) =
             object : ViewModelProvider.Factory {

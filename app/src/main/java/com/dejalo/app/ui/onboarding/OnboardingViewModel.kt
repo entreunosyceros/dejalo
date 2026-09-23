@@ -85,7 +85,14 @@ class OnboardingViewModel(
     }
 
     companion object {
-        val motivatorOptions = listOf("Salud", "Ahorro", "Familia", "Ejemplo", "Rendimiento", "Libertad")
+        val motivatorOptions = listOf(
+            "Salud",
+            "Ahorro",
+            "Familia",
+            "Ser un ejemplo",
+            "Rendimiento",
+            "Libertad"
+        )
 
         fun factory(repository: QuitRepository) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")

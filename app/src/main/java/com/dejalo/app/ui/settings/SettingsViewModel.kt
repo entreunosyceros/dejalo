@@ -114,7 +114,10 @@ class SettingsViewModel(
 
 private fun UserProfileEntity.toUiState(): SettingsUiState {
     val known = OnboardingViewModel.motivatorOptions.toSet()
-    val fromCsv = motivatorsCsv.split('|').map { it.trim() }.filter { it.isNotEmpty() }
+    val fromCsv = motivatorsCsv.split('|')
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .map { if (it == "Ejemplo") "Ser un ejemplo" else it }
     val selected = fromCsv.filter { it in known }.toSet()
     val customFromCsv = fromCsv.filter { it !in known }
     val custom = customMotivator.ifBlank { customFromCsv.joinToString(", ") }

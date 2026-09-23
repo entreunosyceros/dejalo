@@ -157,6 +157,7 @@ class QuitRepository(private val db: DejaloDatabase) {
             .split('|')
             .map { it.trim() }
             .filter { it.isNotEmpty() }
+            .map { if (it == "Ejemplo") "Ser un ejemplo" else it }
         val custom = profile.customMotivator.trim()
         return if (custom.isNotEmpty()) fromCsv + custom else fromCsv
     }
