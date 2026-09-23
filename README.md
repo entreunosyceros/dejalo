@@ -19,6 +19,12 @@ Requisitos: **Android 8.0+ (API 26)**.
 
 ## Privacidad (identidad del producto)
 
+<p align="center">
+
+<img width="402" height="875" alt="documentacion" src="https://github.com/user-attachments/assets/06e9b748-2960-498b-b52a-5efabd00ff49" />
+
+</p>
+
 Déjalo! está pensada para hábitos personales **sin cuenta y sin servidor**. Los registros (ansia, recaídas, rutinas, configuración) viven en Room en el dispositivo.
 
 - Sin analytics obligatorios  
@@ -29,6 +35,12 @@ Déjalo! está pensada para hábitos personales **sin cuenta y sin servidor**. L
 Los únicos accesos de red opcionales son los que inicia el usuario (abrir GitHub o la documentación). Cualquier telemetría futura, si existiera, sería opt-in y estaría claramente separada.
 
 En la app: **Acerca de → Privacidad**.
+
+<p align="center">
+
+<img width="399" height="870" alt="about-dejalo" src="https://github.com/user-attachments/assets/055802ed-1729-4b96-91e6-94884cc2584f" />
+
+</p>
 
 ---
 
@@ -50,6 +62,12 @@ En la app: **Acerca de → Privacidad**.
 
 ### Onboarding y configuración
 
+<p align="center">
+
+<img width="402" height="876" alt="configuracion" src="https://github.com/user-attachments/assets/20b3f2af-6cbb-4c38-8b5d-90e964987b7c" />
+
+</p>
+
 - Fecha y hora del **último cigarrillo** con selector real (`DatePicker` + `TimePicker` Material 3).
 - Atajos rápidos: Ahora, −1 h, −1 día.
 - Validación: no se permiten fechas/horas futuras.
@@ -59,6 +77,12 @@ En la app: **Acerca de → Privacidad**.
 - Todo se guarda en el dispositivo (sin cuenta ni nube).
 
 ### Dashboard (inicio)
+
+<p align="center">
+
+<img width="403" height="883" alt="pantalla-principal" src="https://github.com/user-attachments/assets/36e964ae-2abf-4124-92a5-4cf11b9bd1c8" />
+
+</p>
 
 - Marca **Déjalo!** con logo; al pulsar el logo/nombre se abre el repo en el navegador.
 - **Racha actual** en vivo (días/horas/minutos/segundos desde la última recaída o el abandono).
@@ -80,6 +104,12 @@ En la app: **Acerca de → Privacidad**.
 
 ### Modo emergencia (ansia / ganas de fumar)
 
+<p align="center">
+
+<img width="402" height="875" alt="modo-emergencia" src="https://github.com/user-attachments/assets/6e659c0e-f8cb-410d-adc3-709e331a75e5" />
+
+</p>
+
 Pensado para picos de 3–5 minutos:
 
 - Escala de **intensidad 0–10** al entrar y otra al terminar (antes/después).
@@ -94,6 +124,12 @@ Pensado para picos de 3–5 minutos:
 
 ### Minijuegos (distraer el ansia)
 
+<p align="center">
+
+<img width="397" height="879" alt="minijuegos" src="https://github.com/user-attachments/assets/1bee7d98-747e-42fe-b55e-c40952025860" />
+
+</p>
+
 Pantalla propia y también disponibles en emergencia, agrupados por mecanismo:
 
 | Mecanismo | Juegos |
@@ -107,11 +143,23 @@ Sin castigo: fallar o soltar antes es normal; se puede repetir.
 
 ### No voy a fumar ahora
 
+<p align="center">
+
+<img width="402" height="572" alt="ahora-no" src="https://github.com/user-attachments/assets/965b1bab-469e-4f42-bf7a-5da7a8eb189e" />
+
+</p>
+
 - Decisión pequeña: solo «ahora no» (no «nunca más»).
 - Temporizador de 5 minutos + intensidad antes/después.
 - Se guarda como episodio de ansia en el historial.
 
 ### Salud y recuperación biológica
+
+<p align="center">
+
+<img width="401" height="874" alt="salud" src="https://github.com/user-attachments/assets/105bf3ac-3779-4390-b84f-d992b390310b" />
+
+</p>
 
 - Sección **¿Qué está pasando en tu cuerpo ahora?** (hito actual + progreso).
 - Hitos fisiológicos con explicación, barra de progreso y fuente orientativa.
@@ -139,6 +187,12 @@ Desbloqueo automático, entre otros:
 
 ### Aprendizajes
 
+<p align="center">
+
+<img width="401" height="677" alt="aprendizajes" src="https://github.com/user-attachments/assets/11e81977-6d41-499a-856c-4b3957693f81" />
+
+</p>
+
 - Pantalla central de patrones: desencadenantes, franjas, zonas de riesgo y causas de recaída.
 - **¿Qué me funciona a mí?** ranking de herramientas por bajada media de intensidad (0–10) y comparación por desencadenante (estadística descriptiva de tus datos, sin IA).
 - **Ansia → recaída:** patrones entre desencadenantes de episodios y causas de recaída, con acceso a **crear rutina alternativa** para ese contexto.
@@ -162,13 +216,6 @@ Se actualizan al cambiar configuración/recaídas y periódicamente (~30 min).
 - Avisos de hitos (1, 3, 7, 14, 30 días).
 - Aviso preventivo con acción «Abrir modo emergencia» al acercarse a una franja detectada.
 - Reprogramación tras reinicio del dispositivo (`BOOT_COMPLETED`).
-
-### Diseño de marca
-
-- Paleta lima → teal + navy (alineada al logo).
-- Fondos con gradiente animado suave.
-- Tipografía expresiva y componentes compartidos (botones, métricas hero, wordmark).
-- Icono de launcher generado a partir del logo PNG.
 
 ---
 
