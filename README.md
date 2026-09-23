@@ -50,6 +50,7 @@ En la app: **Acerca de → Privacidad**.
 
 ### Onboarding y configuración
 
+- Splash de arranque con el logo centrado (2 s).
 - Fecha y hora del **último cigarrillo** con selector real (`DatePicker` + `TimePicker` Material 3).
 - Atajos rápidos: Ahora, −1 h, −1 día.
 - Validación: no se permiten fechas/horas futuras.

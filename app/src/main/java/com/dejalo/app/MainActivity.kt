@@ -4,23 +4,22 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -43,9 +42,10 @@ import com.dejalo.app.ui.relapse.RelapseScreen
 import com.dejalo.app.ui.risk.RiskZonesScreen
 import com.dejalo.app.ui.routines.RoutinesScreen
 import com.dejalo.app.ui.settings.SettingsScreen
-import com.dejalo.app.ui.theme.DejaloColors
+import com.dejalo.app.ui.splash.SplashScreen
 import com.dejalo.app.ui.theme.DejaloTheme
 import com.dejalo.app.widget.WidgetUpdater
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 
 class MainActivity : ComponentActivity() {
@@ -55,12 +55,16 @@ class MainActivity : ComponentActivity() {
     ) { /* optional */ }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         requestNotificationsIfNeeded()
 
         val openEmergency = intent?.action == "com.dejalo.app.OPEN_EMERGENCY"
         val repository = application.dejaloRepository
+
+        var keepSystemSplash = true
+        splashScreen.setKeepOnScreenCondition { keepSystemSplash }
 
         setContent {
             DejaloTheme {
@@ -74,14 +78,18 @@ class MainActivity : ComponentActivity() {
                         .collectAsStateWithLifecycle(initialValue = null)
 
                     LaunchedEffect(Unit) {
+                        val startedAt = SystemClock.elapsedRealtime()
                         hasProfile = repository.observeProfile().first() != null
+                        // Pasa al splash Compose (logo grande centrado).
+                        keepSystemSplash = false
+                        val remaining = MIN_SPLASH_MS -
+                            (SystemClock.elapsedRealtime() - startedAt)
+                        if (remaining > 0L) delay(remaining)
                         ready = true
                     }
 
                     if (!ready) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            CircularProgressIndicator(color = DejaloColors.TealDeep)
-                        }
+                        SplashScreen()
                         return@Surface
                     }
 
@@ -252,5 +260,9 @@ class MainActivity : ComponentActivity() {
                 notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+    }
+
+    companion object {
+        private const val MIN_SPLASH_MS = 2_000L
     }
 }

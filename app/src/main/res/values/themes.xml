@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Dejalo" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Dejalo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/splash_background</item>
+    </style>
+
+    <!-- Arranque en frío: logo centrado hasta que Compose toma el control. -->
+    <style name="Theme.Dejalo.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_dejalo</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+        <item name="postSplashScreenTheme">@style/Theme.Dejalo</item>
+    </style>
 </resources>

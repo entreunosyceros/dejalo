@@ -2,4 +2,5 @@
 <resources>
     <color name="seed">#00C2B0</color>
     <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="splash_background">#EFFAF7</color>
 </resources>
