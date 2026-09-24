@@ -38,7 +38,7 @@
         </activity>
 
         <receiver
-            android:name=".widget.DejaloWidgetReceiver"
+            android:name=".widget.DejaloWidgetProvider"
             android:exported="true"
             android:label="@string/widget_label">
             <intent-filter>
@@ -50,7 +50,7 @@
         </receiver>
 
         <receiver
-            android:name=".widget.DejaloSavingsWidgetReceiver"
+            android:name=".widget.DejaloSavingsWidgetProvider"
             android:exported="true"
             android:label="@string/widget_savings_label">
             <intent-filter>

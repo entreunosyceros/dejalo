@@ -15,7 +15,7 @@ object DejaloColors {
     val Cloud = Color(0xFFFFFFFF)
     val Crisis = Color(0xFFE85D4C)
     val CrisisSoft = Color(0xFFFFE8E4)
-    val InkMuted = Color(0xFF4A5578)
+    val InkMuted = Color(0xFF2F3A5C)
     val Line = Color(0xFFD5EBE6)
 
     val BrandGradient = Brush.linearGradient(

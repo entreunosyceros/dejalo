@@ -35,10 +35,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dejalo.app.data.QuitRepository
 import com.dejalo.app.ui.components.BrandMark
+import com.dejalo.app.ui.components.BrandOutlinedButton
 import com.dejalo.app.ui.components.BrandPrimaryButton
 import com.dejalo.app.ui.components.DejaloBackground
 import com.dejalo.app.ui.components.GradientHairline
 import com.dejalo.app.ui.components.SectionTitle
+import com.dejalo.app.ui.components.SoftPanel
 import com.dejalo.app.ui.theme.DejaloColors
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -46,6 +48,7 @@ import com.dejalo.app.ui.theme.DejaloColors
 fun OnboardingScreen(
     repository: QuitRepository,
     onFinished: () -> Unit,
+    onRequestNotifications: (() -> Unit)? = null,
     viewModel: OnboardingViewModel = viewModel(factory = OnboardingViewModel.factory(repository))
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -175,6 +178,28 @@ fun OnboardingScreen(
 
             state.error?.let {
                 Text(it, color = MaterialTheme.colorScheme.error)
+            }
+
+            SoftPanel {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "NOTIFICACIONES LOCALES",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = DejaloColors.TealDeep
+                    )
+                    Text(
+                        text = "Opcional: avisos de hitos y zonas de riesgo. Todo en el dispositivo, sin servidor.",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = DejaloColors.InkMuted
+                    )
+                    if (onRequestNotifications != null) {
+                        BrandOutlinedButton(
+                            text = "Permitir avisos",
+                            onClick = onRequestNotifications,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
 
             Spacer(Modifier.height(4.dp))

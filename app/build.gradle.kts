@@ -19,8 +19,6 @@ android {
     }
 
     signingConfigs {
-        // Firma release instalable (keystore de debug).
-        // Para Play Store: añade un signingConfig con tu keystore propio.
         create("release") {
             initWith(getByName("debug"))
         }
@@ -49,6 +47,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 // Nombre del APK = nombre de la app (p. ej. Déjalo!-debug.apk).
@@ -91,8 +97,9 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
-    implementation("androidx.glance:glance-appwidget:1.1.1")
-    implementation("androidx.glance:glance-material3:1.1.1")
 
     testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.room:room-testing:2.6.1")
 }

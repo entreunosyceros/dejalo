@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_savings_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F3D2E"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <TextView
+        android:id="@+id/widget_savings_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ahorrado"
+        android:textColor="#7BC49A"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/widget_savings_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/widget_savings_brand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="@string/app_name"
+        android:textColor="#7BC49A"
+        android:textSize="11sp" />
+</LinearLayout>

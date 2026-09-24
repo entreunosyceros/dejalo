@@ -31,4 +31,7 @@ interface AlternativeRoutineDao {
 
     @Query("DELETE FROM alternative_routines WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    @Query("DELETE FROM alternative_routines")
+    suspend fun deleteAll()
 }

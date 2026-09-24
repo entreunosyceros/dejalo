@@ -14,6 +14,6 @@ interface CravingDao {
     @Query("SELECT * FROM craving_events ORDER BY triggeredAtMillis DESC")
     fun observeAll(): Flow<List<CravingEventEntity>>
 
-    @Query("SELECT COUNT(*) FROM craving_events")
-    fun observeCount(): Flow<Int>
+    @Query("DELETE FROM craving_events")
+    suspend fun deleteAll()
 }

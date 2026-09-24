@@ -26,7 +26,7 @@ import com.dejalo.app.data.local.entity.UserProfileEntity
         AlternativeRoutineEntity::class
     ],
     version = 4,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class DejaloDatabase : RoomDatabase() {
     abstract fun userProfileDao(): UserProfileDao
@@ -39,7 +39,7 @@ abstract class DejaloDatabase : RoomDatabase() {
         @Volatile
         private var instance: DejaloDatabase? = null
 
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
+        val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE craving_events ADD COLUMN intensityInitial INTEGER NOT NULL DEFAULT -1"
@@ -53,7 +53,7 @@ abstract class DejaloDatabase : RoomDatabase() {
             }
         }
 
-        private val MIGRATION_2_3 = object : Migration(2, 3) {
+        val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     """
@@ -69,13 +69,16 @@ abstract class DejaloDatabase : RoomDatabase() {
             }
         }
 
-        private val MIGRATION_3_4 = object : Migration(3, 4) {
+        val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "ALTER TABLE relapse_events ADD COLUMN nextPlan TEXT NOT NULL DEFAULT ''"
                 )
             }
         }
+
+        fun allMigrations(): Array<Migration> =
+            arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
 
         fun get(context: Context): DejaloDatabase {
             return instance ?: synchronized(this) {
@@ -84,8 +87,7 @@ abstract class DejaloDatabase : RoomDatabase() {
                     DejaloDatabase::class.java,
                     "dejalo.db"
                 )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(*allMigrations())
                     .build()
                     .also { instance = it }
             }

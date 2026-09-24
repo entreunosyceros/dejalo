@@ -17,4 +17,7 @@ interface BadgeDao {
 
     @Query("SELECT id FROM badges")
     suspend fun getUnlockedIds(): List<String>
+
+    @Query("DELETE FROM badges")
+    suspend fun deleteAll()
 }

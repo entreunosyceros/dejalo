@@ -29,12 +29,13 @@ import androidx.navigation.navArgument
 import com.dejalo.app.ui.about.AboutScreen
 import com.dejalo.app.ui.achievements.AchievementsScreen
 import com.dejalo.app.ui.ansia.AnsiaHistoryScreen
-import com.dejalo.app.ui.dashboard.DashboardScreen
+import com.dejalo.app.ui.backup.BackupScreen
 import com.dejalo.app.ui.docs.DocsScreen
 import com.dejalo.app.ui.emergency.EmergencyScreen
 import com.dejalo.app.ui.games.GamesHubScreen
 import com.dejalo.app.ui.health.HealthScreen
 import com.dejalo.app.ui.learnings.LearningsScreen
+import com.dejalo.app.ui.navigation.MainScaffold
 import com.dejalo.app.ui.navigation.Routes
 import com.dejalo.app.ui.notnow.NotNowScreen
 import com.dejalo.app.ui.onboarding.OnboardingScreen
@@ -58,7 +59,6 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        requestNotificationsIfNeeded()
 
         val openEmergency = intent?.action == "com.dejalo.app.OPEN_EMERGENCY"
         val repository = application.dejaloRepository
@@ -80,7 +80,6 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(Unit) {
                         val startedAt = SystemClock.elapsedRealtime()
                         hasProfile = repository.observeProfile().first() != null
-                        // Pasa al splash Compose (logo grande centrado).
                         keepSystemSplash = false
                         val remaining = MIN_SPLASH_MS -
                             (SystemClock.elapsedRealtime() - startedAt)
@@ -94,7 +93,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     val navController = rememberNavController()
-                    val start = if (!hasProfile) Routes.Onboarding else Routes.Home
+                    val start = if (!hasProfile) Routes.Onboarding else Routes.Main
 
                     LaunchedEffect(openEmergency, hasProfile) {
                         if (openEmergency && hasProfile) {
@@ -111,34 +110,25 @@ class MainActivity : ComponentActivity() {
                                 repository = repository,
                                 onFinished = {
                                     WidgetUpdater.enqueue(this@MainActivity)
-                                    navController.navigate(Routes.Home) {
+                                    requestNotificationsIfNeeded()
+                                    navController.navigate(Routes.Main) {
                                         popUpTo(Routes.Onboarding) { inclusive = true }
                                     }
+                                },
+                                onRequestNotifications = { requestNotificationsIfNeeded() }
+                            )
+                        }
+                        composable(Routes.Main) {
+                            MainScaffold(
+                                repository = repository,
+                                rootNav = navController,
+                                onRequestNotificationPermission = {
+                                    requestNotificationsIfNeeded()
                                 }
                             )
                         }
-                        composable(Routes.Home) {
-                            DashboardScreen(
-                                repository = repository,
-                                onEmergency = { navController.navigate(Routes.Emergency) },
-                                onNotNow = { navController.navigate(Routes.NotNow) },
-                                onGames = { navController.navigate(Routes.Games) },
-                                onHealth = { navController.navigate(Routes.Health) },
-                                onAchievements = { navController.navigate(Routes.Achievements) },
-                                onRelapse = { navController.navigate(Routes.Relapse) },
-                                onDocs = { navController.navigate(Routes.Docs) },
-                                onSettings = { navController.navigate(Routes.Settings) },
-                                onAbout = { navController.navigate(Routes.About) },
-                                onAnsiaHistory = { navController.navigate(Routes.AnsiaHistory) },
-                                onRoutines = { navController.navigate(Routes.Routines) },
-                                onRiskZones = { navController.navigate(Routes.RiskZones) },
-                                onLearnings = { navController.navigate(Routes.Learnings) }
-                            )
-                        }
                         composable(Routes.Games) {
-                            GamesHubScreen(
-                                onBack = { navController.popBackStack() }
-                            )
+                            GamesHubScreen(onBack = { navController.popBackStack() })
                         }
                         composable(Routes.Health) {
                             HealthScreen(
@@ -154,8 +144,8 @@ class MainActivity : ComponentActivity() {
                                 onOpenRoutines = { navController.navigate(Routes.Routines) },
                                 onBack = {
                                     if (!navController.popBackStack()) {
-                                        navController.navigate(Routes.Home) {
-                                            popUpTo(Routes.Home) { inclusive = true }
+                                        navController.navigate(Routes.Main) {
+                                            popUpTo(Routes.Main) { inclusive = true }
                                         }
                                     }
                                 }
@@ -177,9 +167,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(Routes.Docs) {
-                            DocsScreen(
-                                onBack = { navController.popBackStack() }
-                            )
+                            DocsScreen(onBack = { navController.popBackStack() })
                         }
                         composable(Routes.Settings) {
                             SettingsScreen(
@@ -244,13 +232,19 @@ class MainActivity : ComponentActivity() {
                                 onEmergency = { navController.navigate(Routes.Emergency) }
                             )
                         }
+                        composable(Routes.Backup) {
+                            BackupScreen(
+                                repository = repository,
+                                onBack = { navController.popBackStack() }
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun requestNotificationsIfNeeded() {
+    fun requestNotificationsIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val granted = ContextCompat.checkSelfPermission(
                 this,

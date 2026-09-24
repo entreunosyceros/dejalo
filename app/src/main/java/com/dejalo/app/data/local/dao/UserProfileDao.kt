@@ -18,6 +18,9 @@ interface UserProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(profile: UserProfileEntity)
 
+    @Query("DELETE FROM user_profile")
+    suspend fun deleteAll()
+
     @Query("UPDATE user_profile SET quitAtMillis = :quitAt WHERE id = 1")
     suspend fun updateQuitAt(quitAt: Long)
 }

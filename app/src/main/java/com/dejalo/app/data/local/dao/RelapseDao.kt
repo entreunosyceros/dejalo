@@ -16,4 +16,7 @@ interface RelapseDao {
 
     @Query("SELECT COALESCE(SUM(cigarettes), 0) FROM relapse_events")
     fun observeTotalCigarettes(): Flow<Int>
+
+    @Query("DELETE FROM relapse_events")
+    suspend fun deleteAll()
 }

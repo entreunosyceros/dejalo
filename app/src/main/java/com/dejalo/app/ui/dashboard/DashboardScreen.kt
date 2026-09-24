@@ -5,22 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,17 +55,9 @@ fun DashboardScreen(
     repository: QuitRepository,
     onEmergency: () -> Unit,
     onNotNow: () -> Unit,
-    onGames: () -> Unit,
-    onHealth: () -> Unit,
-    onAchievements: () -> Unit,
     onRelapse: () -> Unit,
-    onDocs: () -> Unit,
-    onSettings: () -> Unit,
-    onAbout: () -> Unit,
-    onAnsiaHistory: () -> Unit,
-    onRoutines: () -> Unit,
     onRiskZones: () -> Unit,
-    onLearnings: () -> Unit,
+    onAnsiaHistory: () -> Unit,
     viewModel: DashboardViewModel = viewModel(factory = DashboardViewModel.factory(repository))
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -163,74 +149,6 @@ fun DashboardScreen(
 
             CrisisButton(text = "Modo emergencia", onClick = onEmergency)
 
-            CrisisButton(
-                text = "No voy a fumar ahora",
-                onClick = onNotNow
-            )
-
-            CrisisButton(
-                text = "Minijuegos — distraer el ansia",
-                onClick = onGames
-            )
-
-            state.cravingSummary?.let { summary ->
-                CravingInsightPanel(summary = summary, onOpenHistory = onAnsiaHistory)
-            }
-
-            BrandOutlinedButton(
-                text = "Historial de ansia",
-                onClick = onAnsiaHistory,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            BrandOutlinedButton(
-                text = "Rutinas alternativas",
-                onClick = onRoutines,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            BrandOutlinedButton(
-                text = "Zonas de riesgo",
-                onClick = onRiskZones,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            BrandOutlinedButton(
-                text = "Aprendizajes de tu proceso",
-                onClick = onLearnings,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                BrandOutlinedButton(
-                    text = "Salud",
-                    onClick = onHealth,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.Favorite, contentDescription = null, tint = DejaloColors.TealDeep)
-                    Spacer(Modifier.width(6.dp))
-                    Text("Salud", style = MaterialTheme.typography.titleMedium)
-                }
-                BrandOutlinedButton(
-                    text = "Logros",
-                    onClick = onAchievements,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Icon(Icons.Default.EmojiEvents, contentDescription = null, tint = DejaloColors.TealDeep)
-                    Spacer(Modifier.width(6.dp))
-                    Text("Logros", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-
-            BrandOutlinedButton(
-                text = "Configuración",
-                onClick = onSettings,
-                modifier = Modifier.fillMaxWidth()
-            )
-
             BrandOutlinedButton(
                 text = "Registrar recaída",
                 onClick = onRelapse,
@@ -238,16 +156,14 @@ fun DashboardScreen(
             )
 
             BrandOutlinedButton(
-                text = "Documentación técnica",
-                onClick = onDocs,
+                text = "No voy a fumar ahora",
+                onClick = onNotNow,
                 modifier = Modifier.fillMaxWidth()
             )
 
-            BrandOutlinedButton(
-                text = "Acerca de Déjalo!",
-                onClick = onAbout,
-                modifier = Modifier.fillMaxWidth()
-            )
+            state.cravingSummary?.let { summary ->
+                CravingInsightPanel(summary = summary, onOpenHistory = onAnsiaHistory)
+            }
 
             if (state.badges.isNotEmpty()) {
                 Text(
@@ -386,20 +302,6 @@ private fun CravingInsightPanel(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                val initial = summary.averageInitial
-                val final = summary.averageFinal
-                if (initial != null && final != null) {
-                    Text(
-                        text = String.format(
-                            Locale("es", "ES"),
-                            "Media: %.1f → %.1f",
-                            initial,
-                            final
-                        ),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = DejaloColors.InkMuted
-                    )
-                }
             } else {
                 Text(
                     text = "En el próximo modo emergencia mide el ansia antes y después (0–10).",
@@ -407,28 +309,8 @@ private fun CravingInsightPanel(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            summary.topTriggerThisWeek?.let { trigger ->
-                Text(
-                    text = "Esta semana destaca: $trigger (${summary.topTriggerThisWeekCount})",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = DejaloColors.InkMuted
-                )
-            } ?: summary.topTrigger?.let { trigger ->
-                Text(
-                    text = "Desencadenante más frecuente: $trigger (${summary.topTriggerCount})",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = DejaloColors.InkMuted
-                )
-            }
-            summary.peakHourBand?.let { band ->
-                Text(
-                    text = "Franja habitual: ${"%02d:00".format(band.startHour)}–${"%02d:00".format(band.endHour)}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = DejaloColors.InkMuted
-                )
-            }
             Text(
-                text = "Toca para ver historial y desencadenantes →",
+                text = "Toca para ver historial →",
                 style = MaterialTheme.typography.labelLarge,
                 color = DejaloColors.TealDeep
             )

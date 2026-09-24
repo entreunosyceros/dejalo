@@ -161,4 +161,11 @@ class QuitRepository(private val db: DejaloDatabase) {
         val custom = profile.customMotivator.trim()
         return if (custom.isNotEmpty()) fromCsv + custom else fromCsv
     }
+
+    suspend fun exportBackupJson(): String =
+        com.dejalo.app.data.backup.BackupCodec.exportJson(db)
+
+    suspend fun importBackupJson(json: String) {
+        com.dejalo.app.data.backup.BackupCodec.importJson(db, json)
+    }
 }

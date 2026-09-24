@@ -6,6 +6,7 @@ import com.dejalo.app.data.local.DejaloDatabase
 import com.dejalo.app.notifications.NotificationHelper
 import com.dejalo.app.notifications.ReinforcementScheduler
 import com.dejalo.app.notifications.RiskZoneScheduler
+import com.dejalo.app.widget.WidgetUpdateWorker
 import com.dejalo.app.widget.WidgetUpdater
 
 class DejaloApp : Application() {
@@ -21,6 +22,7 @@ class DejaloApp : Application() {
         NotificationHelper.createChannels(this)
         ReinforcementScheduler.schedule(this)
         RiskZoneScheduler.schedule(this)
+        WidgetUpdateWorker.schedule(this)
         WidgetUpdater.enqueue(this)
     }
 }

@@ -52,9 +52,9 @@ En la app: **Acerca de → Privacidad**.
 | Jetpack Compose + Material 3 | UI |
 | Room (SQLite) | Persistencia local 100 % offline |
 | Kotlin Flows | Métricas en tiempo real (tick 1 s) |
-| WorkManager | Notificaciones de refuerzo / hitos |
-| Glance | Widget de pantalla de inicio |
-| Navigation Compose | Navegación entre pantallas |
+| WorkManager | Notificaciones de refuerzo / hitos / refresco de widgets |
+| RemoteViews | Widgets de pantalla de inicio |
+| Navigation Compose | Navegación + barra inferior (4 pestañas) |
 
 ---
 
@@ -63,6 +63,7 @@ En la app: **Acerca de → Privacidad**.
 ### Onboarding y configuración
 
 - Splash de arranque con el logo centrado (2 s).
+- Pedido amable de **notificaciones locales** (hitos / zonas de riesgo) en el onboarding; reintento en Ajustes.
 
 <p align="center">
 
@@ -77,6 +78,18 @@ En la app: **Acerca de → Privacidad**.
 - Motivadores (chips + texto personalizado).
 - Meta de ahorro opcional (qué quieres conseguir + precio objetivo).
 - Todo se guarda en el dispositivo (sin cuenta ni nube).
+- **Copia de seguridad** (Ajustes): exportar / importar JSON con el Storage Access Framework.
+
+### Navegación (barra inferior)
+
+Cuatro pestañas para no saturar el inicio:
+
+| Pestaña | Contenido |
+|---------|-----------|
+| **Inicio** | Racha, progreso, CTAs emergencia / recaída / «ahora no» |
+| **Progreso** | Salud, logros, aprendizajes, historial de ansia |
+| **Herramientas** | Emergencia, minijuegos, rutinas, zonas de riesgo |
+| **Ajustes** | Configuración, backup, docs, acerca de, notificaciones |
 
 ### Dashboard (inicio)
 
@@ -91,18 +104,8 @@ En la app: **Acerca de → Privacidad**.
 - Separado del progreso: **mejor racha**, **progreso acumulado** (días desde el abandono, con interrupciones si las hubo) y **cigarrillos evitados** — una recaída no pone todo a cero.
 - Ahorro económico y estimación de vida recuperada.
 - Barra de progreso hacia la meta de ahorro (si está definida).
-- Accesos:
-  - **Modo emergencia**
-  - **No voy a fumar ahora** (compromiso de 5 minutos + check de intensidad)
-  - **Minijuegos — distraer el ansia**
-  - **Historial de ansia** (episodios con intensidad, herramientas, ranking de desencadenantes y franja horaria)
-  - **Rutinas alternativas** (sustituir «situación → cigarrillo» por un ritual paso a paso)
-  - **Zonas de riesgo** (franjas horarias detectadas + aviso en dashboard y notificaciones preventivas)
-  - Salud, Logros, Registrar recaída
-  - **Aprendizajes de tu proceso** (patrones de ansia, franjas y recaídas)
-  - **Configuración** (editar consumo, precio, fecha de abandono, motivadores y meta)
-  - **Documentación técnica** (especificaciones embebidas + enlace a GitHub)
-  - **Acerca de** (logo, descripción, **privacidad** como identidad, enlace al repo)
+- Acciones prioritarias: **Modo emergencia**, **Registrar recaída**, enlace a **No voy a fumar ahora**.
+- El resto de herramientas vive en las otras pestañas (Progreso / Herramientas / Ajustes).
 
 ### Modo emergencia (ansia / ganas de fumar)
 
@@ -202,14 +205,14 @@ Desbloqueo automático, entre otros:
 
 ### Widget de inicio
 
-Dos widgets en el selector del sistema (mantener pulsado el escritorio → Widgets → Déjalo!):
+Dos widgets clásicos (RemoteViews) en el selector del sistema:
 
 | Widget | Contenido |
 |--------|-----------|
 | **Déjalo! — resumen** | Dinero ahorrado, racha vs acumulado y acceso a modo emergencia |
 | **Déjalo! — ahorrado** | Solo el dinero ahorrado (compacto) |
 
-Se actualizan al cambiar configuración/recaídas y periódicamente (~30 min).
+Se actualizan al cambiar configuración/recaídas, al arrancar la app y periódicamente (~45 min, WorkManager, batería no baja).
 
 ### Notificaciones locales
 
@@ -218,6 +221,7 @@ Se actualizan al cambiar configuración/recaídas y periódicamente (~30 min).
 - Avisos de hitos (1, 3, 7, 14, 30 días).
 - Aviso preventivo con acción «Abrir modo emergencia» al acercarse a una franja detectada.
 - Reprogramación tras reinicio del dispositivo (`BOOT_COMPLETED`).
+- Permiso `POST_NOTIFICATIONS` (Android 13+): se pide en onboarding / Ajustes, no en frío al abrir.
 
 ---
 
@@ -244,7 +248,9 @@ Vida / tiempo no expuesto ≈ cigarrillos evitados × 11 minutos (estimación po
 | `relapse_events` | Recaídas (cigarrillos, causa, notas, plan próxima vez) |
 | `badges` | Medallas desbloqueadas |
 
-Base de datos local: `dejalo.db`.
+Base de datos local: `dejalo.db` (versión 4). Esquema exportado en `app/schemas/`. Migraciones `1→2`, `2→3`, `3→4` sin `fallbackToDestructiveMigration`. Tests instrumentados en `DejaloDatabaseMigrationTest`. Para un cambio nuevo: añade `Migration(n, n+1)`, sube `version` y regenera el schema con un build.
+
+Copia de seguridad JSON (Ajustes → Copia de seguridad): export/import vía SAF, sin nube.
 
 ---
 
@@ -252,20 +258,23 @@ Base de datos local: `dejalo.db`.
 
 ```
 app/src/main/java/com/dejalo/app/
-  data/            Room, DAOs, QuitRepository
+  data/            Room, DAOs, QuitRepository, backup/
   domain/          Cálculos, hitos de salud, catálogo de badges
   ui/
+    navigation/    Bottom bar + MainScaffold
+    hubs/          Progreso / Herramientas / Ajustes
     onboarding/    Configuración inicial + Date/Time picker
-    dashboard/     Pantalla principal
+    dashboard/     Inicio (métricas + CTAs)
+    backup/        Export/import JSON
     emergency/     Crisis, respiración, tarjetas
-    emergency/games/  Minijuegos (burbujas, memoria, ola)
-    games/         Hub dedicado de minijuegos
+    emergency/games/  Minijuegos
+    games/         Hub de minijuegos
     health/        Recuperación biológica
     achievements/  Medallas
     relapse/       Recaídas
     components/    Marca, botones, fondos
     theme/         Color, tipografía, tema
-  widget/          Glance
+  widget/          RemoteViews + WidgetUpdateWorker
   notifications/   WorkManager + canales
 ```
 
