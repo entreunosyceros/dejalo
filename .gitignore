@@ -13,7 +13,7 @@ out/
 build/
 **/build/
 
-# Local configuration (SDK path — machine-specific; never commit)
+# Local configuration 
 local.properties
 
 # Android Studio / IntelliJ
@@ -41,7 +41,7 @@ signing.properties
 **/keystore/
 **/keystores/
 
-# Google / Firebase (if added later)
+# Google / Firebase 
 google-services.json
 GoogleService-Info.plist
 
