@@ -44,4 +44,4 @@ Detalle completo: [docs/desarrollo.md](docs/desarrollo.md).
 
 Comunidad: [Contribuir](CONTRIBUTING.md) · [Código de conducta](CODE_OF_CONDUCT.md) · [Seguridad](SECURITY.md)
 
-Repositorio: [github.com/entreunosyceros/dejalo](https://github.com/entreunosyceros/dejalo)
+
