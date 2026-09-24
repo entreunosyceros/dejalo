@@ -1,0 +1,60 @@
+name: Solicitud de mejora
+description: Proponer una nueva función o mejora
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe el problema o la necesidad antes que la solución concreta. Así es más fácil valorar la propuesta para **Déjalo!**.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - UX / dashboard / navegación
+        - Modo emergencia / ansia
+        - Minijuegos
+        - Recaídas / aprendizajes / rutinas
+        - Salud / logros
+        - Widgets / notificaciones
+        - Backup / privacidad / datos
+        - Accesibilidad
+        - Documentación
+        - Otro
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: ¿Qué problema o necesidad quieres resolver?
+      placeholder: "Ej.: En un pico de ansia hay demasiados botones en la pantalla principal."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solución propuesta (opcional)
+      description: Cómo imaginas que debería funcionar en Déjalo!
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Alcance
+      options:
+        - label: Estoy dispuesto/a a contribuir con un PR si la propuesta encaja
+          required: false
+        - label: La propuesta respeta el modelo offline (sin cuenta ni servidor de datos)
+          required: false

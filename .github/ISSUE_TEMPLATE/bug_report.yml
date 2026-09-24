@@ -1,0 +1,105 @@
+name: Informe de error
+description: Algo no funciona como debería
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportar un error en **Déjalo!**. Cuanta más información des, más fácil será reproducirlo.
+
+        ⚠️ No adjuntos con `dejalo.db`, backups JSON ni capturas con datos personales reales.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área afectada
+      options:
+        - Onboarding / configuración
+        - Dashboard / navegación
+        - Modo emergencia / respiración / tarjetas
+        - Minijuegos
+        - Recaídas
+        - Salud / logros / aprendizajes
+        - Rutinas / zonas de riesgo / historial de ansia
+        - Widgets
+        - Notificaciones
+        - Backup export/import
+        - Documentación en la app
+        - Compilación / instalación APK
+        - Otro
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versión de Déjalo!
+      description: versionName (p. ej. 1.0.0) o commit si compilas desde código fuente
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: android
+    attributes:
+      label: Android (API / versión)
+      placeholder: "14 (API 34)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+      description: Lista numerada hasta ver el fallo. Sin datos personales.
+      placeholder: |
+        1. Abrir Déjalo!
+        2. Ir a Modo emergencia
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamiento actual
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs o capturas
+      description: Logcat filtrado o capturas (sin datos personales)
+      render: shell
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Entorno
+      options:
+        - APK debug (`assembleDebug`)
+        - APK release (`assembleRelease`)
+        - Emulador
+        - Dispositivo físico
+        - No lo sé
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmación
+      options:
+        - label: He buscado en issues abiertas y cerradas y no he encontrado un duplicado
+          required: true
+        - label: Este informe no incluye bases de datos, backups ni datos personales de usuarios
+          required: true

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Guía de contribución
+    url: https://github.com/entreunosyceros/dejalo/blob/main/CONTRIBUTING.md
+    about: Cómo reportar bugs, proponer mejoras y enviar pull requests.
+  - name: Documentación del proyecto
+    url: https://github.com/entreunosyceros/dejalo/blob/main/README.md
+    about: Índice de privacidad, funcionalidades, arquitectura y desarrollo.
+  - name: Política de seguridad
+    url: https://github.com/entreunosyceros/dejalo/security/policy
+    about: Reporta vulnerabilidades siguiendo SECURITY.md (no publiques detalles en issues abiertas).
